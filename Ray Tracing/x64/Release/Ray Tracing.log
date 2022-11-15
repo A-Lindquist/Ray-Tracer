@@ -1,0 +1,14 @@
+﻿  Intersection.cpp
+  Light.cpp
+  MainActivity.cpp
+  Ray.cpp
+  Sphere.cpp
+  Surface.cpp
+  Triangle.cpp
+  Vertex.cpp
+  Window.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 652 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Ray Tracing.vcxproj -> D:\_Programming\C++\Ray Tracing\Ray Tracing\x64\Release\Ray Tracing.exe
