@@ -6,19 +6,22 @@
 // Default Constructor
 Light::Light()
 {
-	position = new Vertex();
-	color = new Vertex();
+	position = Vertex();
+	color = Vertex();
 }
 
 // Parameterized Constructor
-Light::Light(Vertex* position, Vertex* color)
+Light::Light(Vertex position, Vertex color)
 {
 	this->position = position;
 	this->color = color;
 }
 
+// Destructor
+Light::~Light() {}
+
 // String Representation
 std::string Light::toString()
 {
-	return "LIGHT: [Position: " + position->toString() + "  |  (Color: " + color->toString() + "]";
+	return "LIGHT: [Position: " + position.toString() + "  |  (Color: " + color.toString() + "]";
 }

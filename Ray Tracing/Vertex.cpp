@@ -1,5 +1,6 @@
 // Vertex Class
 #include "Vertex.h"
+#include <iostream>
 
 // ===== VERTEX ===== //
 
@@ -20,6 +21,14 @@ Vertex::Vertex(double x, double y, double z)
 	r = x, g = y, b = z;
 }
 
+// Null Representation
+Vertex::Vertex(int null)
+{
+	isNull = true;
+}
+
+Vertex::~Vertex() {}
+
 // String Representation
 std::string Vertex::toString()
 {
@@ -27,50 +36,50 @@ std::string Vertex::toString()
 }
 
 // Vertex Addition
-Vertex* Vertex::add(Vertex* other)
+Vertex Vertex::add(Vertex other)
 {
-	return new Vertex(this->x + other->x, this->y + other->y, this->z + other->z);
+	return Vertex(this->x + other.x, this->y + other.y, this->z + other.z);
 }
 
 // Vertex Subtraction
-Vertex* Vertex::sub(Vertex* other)
+Vertex Vertex::sub(Vertex other)
 {
-	return new Vertex(this->x - other->x, this->y - other->y, this->z - other->z);
+	return Vertex(this->x - other.x, this->y - other.y, this->z - other.z);
 }
 
 // Vertex Dot Product
-double Vertex::dot(Vertex* other)
+double Vertex::dot(Vertex other)
 {
-	return (this->x * other->x) + (this->y * other->y) + (this->z * other->z);
+	return (this->x * other.x) + (this->y * other.y) + (this->z * other.z);
 }
 
 // Vertex Cross Product
-Vertex* Vertex::cross(Vertex* other)
+Vertex Vertex::cross(Vertex other)
 {
-	double i = (this->y * other->z) - (this->z * other->y);
-	double j = (this->z * other->x) - (this->x * other->z);
-	double k = (this->x * other->y) - (this->y * other->x);
-	return new Vertex(i, j, k);
+	double i = (this->y * other.z) - (this->z * other.y);
+	double j = (this->z * other.x) - (this->x * other.z);
+	double k = (this->x * other.y) - (this->y * other.x);
+	return Vertex(i, j, k);
 }
 
 // Vertex Uniform Scale (vertex * int)
-Vertex* Vertex::uniformScale(double scalar)
+Vertex Vertex::uniformScale(double scalar)
 {
-	return new Vertex(this->x * scalar, this->y * scalar, this->z * scalar);
+	return Vertex(this->x * scalar, this->y * scalar, this->z * scalar);
 }
 
 // Vertex Euclidean Distance
-double Vertex::distance(Vertex* other)
+double Vertex::distance(Vertex other)
 {
-	double i = (other->x - this->x) * (other->x - this->x);
-	double j = (other->y - this->y) * (other->y - this->y);
-	double k = (other->z - this->z) * (other->z - this->z);
+	double i = (other.x - this->x) * (other.x - this->x);
+	double j = (other.y - this->y) * (other.y - this->y);
+	double k = (other.z - this->z) * (other.z - this->z);
 	return sqrt(i + j + k);
 }
 
 // Normalize Vertex
-Vertex* Vertex::normalize()
+Vertex Vertex::normalize()
 {
 	double length = sqrt((this->x * this->x) + (this->y * this->y) + (this->z * this->z));
-	return new Vertex(this->x / length, this->y / length, this->z / length);
+	return Vertex(this->x / length, this->y / length, this->z / length);
 }

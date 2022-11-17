@@ -13,15 +13,18 @@ class Intersection
 public:
 
 	// Attributes:
-	Shape* shape;
-	Vertex* point;
+	Shape* shape = nullptr;
+	Vertex point;
 	double t;
 
 	// Default Constructor
 	Intersection();
 
 	// Parameterized Constructor
-	Intersection(Shape* shape, Vertex* point, double t);
+	Intersection(Shape* shape, Vertex point, double t);
+
+	// Destructor
+	~Intersection();
 };
 
 #endif // !INTERSECTION_H

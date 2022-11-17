@@ -14,13 +14,15 @@ class Shape
 public:
 	
 	// Attribute
-	Surface* surface;
+	Surface surface;
 
-	Vertex* normal; // for triangles
-	Vertex* center; // for spheres
+	bool isNull = false;
+
+	Vertex normal; // for triangles
+	Vertex center; // for spheres
 
 	// Get Ray Intersection
-	virtual Vertex* getRayIntersection(Ray* ray) = 0;
+	virtual Vertex getRayIntersection(Ray ray) = 0;
 
 	// Get Shape Type
 	virtual std::string getType() = 0;

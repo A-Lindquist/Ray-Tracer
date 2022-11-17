@@ -14,8 +14,8 @@ void getKeyInput();
 void collectSceneData(std::string file);
 void resetScene();
 void renderScene();
-Intersection* rayIntersectScene(Ray* ray);
-Vertex* colorize(Intersection* intersection, Ray* ray, int depth);
+Intersection rayIntersectScene(Ray ray);
+Vertex colorize(Intersection intersection, Ray ray, int depth);
 
 class MainActivity
 {

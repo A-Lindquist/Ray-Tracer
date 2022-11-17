@@ -16,22 +16,28 @@ class Triangle : public Shape
 public:
 
 	// Attributes:
-	Vertex* v1;
-	Vertex* v2;
-	Vertex* v3;
+	Vertex v1;
+	Vertex v2;
+	Vertex v3;
 
-	Vertex* edge_1;
-	Vertex* edge_2;
-	Vertex* edge_3;
+	Vertex edge_1;
+	Vertex edge_2;
+	Vertex edge_3;
 
 	// Default Constructor
 	Triangle();
 
 	// Parameterized Constructor
-	Triangle(Vertex* v1, Vertex* v2, Vertex* v3, Surface* surface);
+	Triangle(Vertex v1, Vertex v2, Vertex v3, Surface surface);
+
+	// Null Representation
+	Triangle(int null);
+
+	// Destructor
+	~Triangle();
 
 	// Get Ray Intersection
-	Vertex* getRayIntersection(Ray* ray);
+	Vertex getRayIntersection(Ray ray);
 
 	// Get Shape Type
 	std::string getType();

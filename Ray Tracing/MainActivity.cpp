@@ -15,19 +15,19 @@ double PI = (2 * acos(0.0));
 Window* window;
 bool keyPressed = true;
 
-Vertex* eye;
+Vertex eye;
 double FOV;
-Vertex* uVector;
-Vertex* vVector;
-Vertex* wVector;
+Vertex uVector;
+Vertex vVector;
+Vertex wVector;
 
 std::vector<Shape*> shapes;
 std::vector<Light*> lights;
 
-Vertex* background_color;
+Vertex background_color;
 Triangle* triangle;
-std::vector<Vertex*> vertices;
-Surface* surface;
+std::vector<Vertex> vertices;
+Surface surface;
 
 // MAIN ACTIVITY:
 int main()
@@ -35,9 +35,8 @@ int main()
 	// ================================ SETUP ================================ //
 	window = new Window();
 
-	// BLACK SCREEN
+	// BLANK SCREEN
 	u32* pixel = window->pixel;
-	u32* temp = pixel;
 	int color = 0x003180;
 	for (int i = 0; i < window->height; ++i)
 	{
@@ -194,7 +193,7 @@ void collectSceneData(std::string file)
 			double y = std::stof(words[2]);
 			double z = std::stof(words[3]);
 
-			eye = new Vertex(x, y, z);
+			eye = Vertex(x, y, z);
 		}
 		// ----------------------------------- U, V, W ----------------------------------- //
 		else if (words[0] == "uvw")
@@ -203,19 +202,19 @@ void collectSceneData(std::string file)
 			double uX = std::stof(words[1]);
 			double uY = std::stof(words[2]);
 			double uZ = std::stof(words[3]);
-			uVector = new Vertex(uX, uY, uZ);
+			uVector = Vertex(uX, uY, uZ);
 
 			// V-Vector
 			double vX = std::stof(words[4]);
 			double vY = std::stof(words[5]);
 			double vZ = std::stof(words[6]);
-			vVector = new Vertex(vX, vY, vZ);
+			vVector = Vertex(vX, vY, vZ);
 			
 			// W-Vector
 			double wX = std::stof(words[7]);
 			double wY = std::stof(words[8]);
 			double wZ = std::stof(words[9]);
-			wVector = new Vertex(wX, wY, wZ);
+			wVector = Vertex(wX, wY, wZ);
 		}
 		// ------------------------------ Background Color ------------------------------- //
 		else if (words[0] == "background")
@@ -225,7 +224,7 @@ void collectSceneData(std::string file)
 			double g = std::stof(words[2]);
 			double b = std::stof(words[3]);
 
-			background_color = new Vertex(r, g, b);
+			background_color = Vertex(r, g, b);
 		}
 		// ------------------------------------ Light ------------------------------------ //
 		else if (words[0] == "light")
@@ -240,7 +239,7 @@ void collectSceneData(std::string file)
 			double g = std::stof(words[5]);
 			double b = std::stof(words[6]);
 
-			lights.push_back(new Light(new Vertex(x, y, z), new Vertex(r, g, b)));
+			lights.push_back(new Light(Vertex(x, y, z), Vertex(r, g, b)));
 		}
 		// ----------------------------------- Surface ----------------------------------- //
 		else if (words[0] == "surface")
@@ -264,7 +263,7 @@ void collectSceneData(std::string file)
 			double spec_power = std::stof(words[10]);
 			double k_refl = std::stof(words[11]);
 
-			surface = new Surface(dr, dg, db, ar, ag, ab, sr, sg, sb, spec_power, k_refl);
+			surface = Surface(dr, dg, db, ar, ag, ab, sr, sg, sb, spec_power, k_refl);
 		}
 		// ------------------------------------ Sphere ----------------------------------- //
 		else if (words[0] == "sphere")
@@ -277,13 +276,13 @@ void collectSceneData(std::string file)
 			double y = std::stof(words[3]);
 			double z = std::stof(words[4]);
 
-			shapes.push_back(new Sphere(new Vertex(x, y, z), radius, surface));
+			shapes.push_back(new Sphere(Vertex(x, y, z), radius, surface));
 		}
 		// -------------------------------- Begin Triangle ------------------------------- //
 		else if (words[0] == "begin")
 		{
 			vertices.clear();
-			triangle = NULL;
+			triangle = nullptr;
 		}
 		// ------------------------------------ Vertex ----------------------------------- //
 		else if (words[0] == "vertex")
@@ -293,15 +292,15 @@ void collectSceneData(std::string file)
 			double y = std::stof(words[2]);
 			double z = std::stof(words[3]);
 
-			vertices.push_back(new Vertex(x, y, z));
+			vertices.push_back(Vertex(x, y, z));
 		}
 		// --------------------------------- End Triangle -------------------------------- //
 		else if (words[0] == "end")
 		{
 			// Position
-			Vertex* v1 = vertices[0];
-			Vertex* v2 = vertices[1];
-			Vertex* v3 = vertices[2];
+			Vertex v1 = vertices[0];
+			Vertex v2 = vertices[1];
+			Vertex v3 = vertices[2];
 
 			triangle = new Triangle(v1, v2, v3, surface);
 			shapes.push_back(triangle);
@@ -330,19 +329,23 @@ void collectSceneData(std::string file)
 // RESET SCENE DESCRIPTION:
 void resetScene()
 {
-	eye = NULL;
-	FOV = 0.0;
-	uVector = NULL;
-	vVector = NULL;
-	wVector = NULL;
-
-	shapes.clear();
+	// Clear Lists
+	if (shapes.size() >= 1)
+	{
+		delete shapes[0];
+		shapes.clear();
+	}
+	
+	vertices.clear();
+	
+	if (lights.size() >= 1)
+	{
+		delete lights[0];
+	}
 	lights.clear();
 
-	background_color = NULL;
-	triangle = NULL;
-	vertices.clear();
-	surface = NULL;
+	//delete triangle;
+	triangle = nullptr;
 }
 
 // RENDER SCENE:
@@ -366,23 +369,23 @@ void renderScene()
 			double V = ((2.0 * i) / window->height) - 1;
 
 			// Directional Components
-			Vertex* x = uVector->uniformScale(U);
-			Vertex* y = vVector->uniformScale(V);
-			Vertex* z = wVector->uniformScale(-d);
+			Vertex x = uVector.uniformScale(U);
+			Vertex y = vVector.uniformScale(V);
+			Vertex z = wVector.uniformScale(-d);
 
 			// Directional Vector
-			Vertex* direction = x->add(y->add(z))->normalize();
+			Vertex direction = x.add(y.add(z)).normalize();
 
 			// Initialize Ray
-			Ray* ray = new Ray(eye, direction);
+			Ray ray = Ray(eye, direction);
 
 			// Collect Ray Intersection Data
-			Intersection* intersection = rayIntersectScene(ray);
+			Intersection intersection = rayIntersectScene(ray);
 
-			Vertex* color;
+			Vertex color;
 
 			// Has Intersection?
-			if (intersection != NULL)
+			if (intersection.shape != nullptr)
 			{
 				color = colorize(intersection, ray, 10);
 			}
@@ -392,9 +395,9 @@ void renderScene()
 			}
 
 			// Configure Color
-			int r = (int)(color->r * 255);
-			int g = (int)(color->g * 255);
-			int b = (int)(color->b * 255);
+			int r = (int)(color.r * 255);
+			int g = (int)(color.g * 255);
+			int b = (int)(color.b * 255);
 
 			if (r > 255) r = 255;
 			if (g > 255) g = 255;
@@ -409,28 +412,29 @@ void renderScene()
 
 			// Set Pixel Color
 			*pixel++ = hexColor;
-			//std::cout << "RGB: (" + std::to_string(r) + ", " + std::to_string(g) + ", " + std::to_string(b) + ")\n";
+
+			//delete intersection;
 		}
 	}
 }
 
 // RAY INTERSECT SCENE
-Intersection* rayIntersectScene(Ray* ray)
+Intersection rayIntersectScene(Ray ray)
 {
 	// Base Cases
 	double min_t = INT_MAX;
-	Shape* closest_shape = NULL;
-	Vertex* closest_intersection = NULL;
+	Shape* closest_shape = nullptr;
+	Vertex closest_intersection;
 
 	// Check Ray -> Nearest Shape 
 	for (Shape* shape : shapes)
 	{
-		Vertex* temp_point = shape->getRayIntersection(ray);
+		Vertex temp_point = shape->getRayIntersection(ray);
 
 		// Found Intersection?
-		if (temp_point != NULL)
+		if (!temp_point.isNull)
 		{
-			double distance = temp_point->distance(ray->origin);
+			double distance = temp_point.distance(ray.origin);
 
 			// Found Closer Intersection?
 			if (distance > 0 && distance < min_t)
@@ -443,38 +447,37 @@ Intersection* rayIntersectScene(Ray* ray)
 	}
 
 	// No Intersections?
-	if (closest_intersection == NULL)
+	if (closest_shape == nullptr)
 	{
-		return new Intersection(NULL, NULL, -1.0);
+		return Intersection(nullptr, Vertex(), -1.0);
 	}
 
 	// Has Closest Intersection?
 	else
 	{
-		return new Intersection(closest_shape, closest_intersection, min_t);
+		return Intersection(closest_shape, closest_intersection, min_t);
 	}
-
-	return NULL;
 }
 
 // COLORIZE
-Vertex* colorize(Intersection* intersection, Ray* ray, int depth)
+Vertex colorize(Intersection intersection, Ray ray, int depth)
 {
-	// Unpack Interection Data
-	Shape* shape = intersection->shape;
-	Vertex* point = intersection->point;
+	// Unpack Intersection Data
+	Shape* shape = intersection.shape;
+	Vertex point = intersection.point;
 
 	// No Intersection?
-	if (shape == NULL)
+	if (shape == nullptr)
 	{
+		delete shape;
 		return background_color;
 	}
 
 	// Normal Vector
-	Vertex* normal;
+	Vertex normal;
 	if (shape->getType() == "SPHERE")
 	{
-		normal = (point->sub(shape->center))->normalize();
+		normal = (point.sub(shape->center)).normalize();
 	}
 	else if (shape->getType() == "TRIANGLE")
 	{
@@ -491,15 +494,15 @@ Vertex* colorize(Intersection* intersection, Ray* ray, int depth)
 	double B = 0;
 
 	// Reflections?
-	if (depth > 0 && shape->surface->k_refl > 0)
+	if (depth > 0 && shape->surface.k_refl > 0)
 	{
-		Vertex* refl_dir = (ray->direction->sub(normal->uniformScale(2 * normal->dot(ray->direction))))->normalize();
-		Ray* refl_ray = new Ray(point->add(normal->uniformScale(0.0001)), refl_dir);
-		Intersection* refl_intersection = rayIntersectScene(refl_ray);
+		Vertex refl_dir = (ray.direction.sub(normal.uniformScale(2 * normal.dot(ray.direction)))).normalize();
+		Ray refl_ray = Ray(point.add(normal.uniformScale(0.0001)), refl_dir);
+		Intersection refl_intersection = rayIntersectScene(refl_ray);
 
 		// Reflect to another shape?
-		Vertex* refl_color;
-		if (refl_intersection->shape != NULL && refl_intersection->shape != shape)
+		Vertex refl_color;
+		if (refl_intersection.shape != nullptr && refl_intersection.shape != shape)
 		{
 			refl_color = colorize(refl_intersection, refl_ray, depth - 1);
 		}
@@ -507,67 +510,65 @@ Vertex* colorize(Intersection* intersection, Ray* ray, int depth)
 		{
 			refl_color = background_color;
 		}
+		
+
+		//delete refl_intersection;
 
 		// Set Total R G B color values
-		R += refl_color->r * shape->surface->k_refl;
-		G += refl_color->g * shape->surface->k_refl;
-		B += refl_color->b * shape->surface->k_refl;
+		R += refl_color.r * shape->surface.k_refl;
+		G += refl_color.g * shape->surface.k_refl;
+		B += refl_color.b * shape->surface.k_refl;
 	}
 	
 	// Light Value Inputs
 	for (Light* light : lights)
 	{
 		// Light Vector
-		Vertex* light_vector = (light->position->sub(point))->normalize();
+		Vertex light_vector = (light->position.sub(point)).normalize();
 
 		// Shadow Ray
-		Ray* shadow_ray = new Ray(point->add(normal->uniformScale(0.0001)), light_vector);
-		Intersection* shadow_intersection = rayIntersectScene(shadow_ray);
+		Ray shadow_ray = Ray(point.add(normal.uniformScale(0.0001)), light_vector);
+		Intersection shadow_intersection = rayIntersectScene(shadow_ray);
 		int shadow_term = 1;
 
 		// Under Shadow?
-		if (shadow_intersection->shape != NULL && shadow_intersection->t < light->position->distance(point))
+		if (shadow_intersection.shape != nullptr && shadow_intersection.t < light->position.distance(point))
 		{
 			shadow_term = 0;
 		}
 
+		//delete shadow_intersection;
+
 		// Half-way Vector
-		Vertex* h_vector = (light_vector->sub(ray->direction))->normalize();
+		Vertex h_vector = (light_vector.sub(ray.direction)).normalize();
 
 		// Specular Coefficient
-		double spec_coeff = pow(max(0, h_vector->dot(normal)), shape->surface->spec_power);
+		double spec_coeff = pow(max(0, h_vector.dot(normal)), shape->surface.spec_power);
 
 		// Specular Color
-		double spec_r = shape->surface->sr * light->color->r * spec_coeff;
-		double spec_g = shape->surface->sg * light->color->g * spec_coeff;
-		double spec_b = shape->surface->sb * light->color->b * spec_coeff;
+		double spec_r = shape->surface.sr * light->color.r * spec_coeff;
+		double spec_g = shape->surface.sg * light->color.g * spec_coeff;
+		double spec_b = shape->surface.sb * light->color.b * spec_coeff;
 
 		// Diffuse Coefficient
-		double diff_coeff = max(0, normal->dot(light_vector));
+		double diff_coeff = max(0, normal.dot(light_vector));
 
 		// Diffuse Color
-		double diff_r = shape->surface->dr * light->color->r * diff_coeff;
-		double diff_g = shape->surface->dg * light->color->g * diff_coeff;
-		double diff_b = shape->surface->db * light->color->b * diff_coeff;
+		double diff_r = shape->surface.dr * light->color.r * diff_coeff;
+		double diff_g = shape->surface.dg * light->color.g * diff_coeff;
+		double diff_b = shape->surface.db * light->color.b * diff_coeff;
 
 		// Combine Specular + Diffuse + Shading
 		R += (diff_r + spec_r) * shadow_term;
 		G += (diff_g + spec_g) * shadow_term;
 		B += (diff_b + spec_b) * shadow_term;
-		//std::cout << "RED: " + std::to_string(R) + "\n";
-		//std::cout << "GREEN: " + std::to_string(G) + "\n";
-		//std::cout << "BLUE: " + std::to_string(B) + "\n";
 	}
 
 	// Ambient Contribution
-	R += shape->surface->ar;
-	G += shape->surface->ag;
-	B += shape->surface->ab;
-
-	//std::cout << "FINAL RED: " + std::to_string(surface->ar) + "\n";
-	//std::cout << "FINAL GREEN: " + std::to_string(surface->ag) + "\n";
-	//std::cout << "FINAL BLUE: " + std::to_string(surface->ab) + "\n";
+	R += shape->surface.ar;
+	G += shape->surface.ag;
+	B += shape->surface.ab;
 
 	// Return resulting RGB
-	return new Vertex(R, G, B);
+	return Vertex(R, G, B);
 }

@@ -11,14 +11,17 @@ class Light
 {
 public:
 	// Attributes
-	Vertex* position;
-	Vertex* color;
+	Vertex position;
+	Vertex color;
 
 	// Default Constructor
 	Light();
 
 	// Parameterized Constructor
-	Light(Vertex* position, Vertex* color);
+	Light(Vertex position, Vertex color);
+
+	// Destructor
+	~Light();
 
 	// String Representation
 	std::string toString();

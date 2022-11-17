@@ -6,33 +6,36 @@
 // Default Constructor
 Ray::Ray()
 {
-	origin = new Vertex();
-	direction = new Vertex();
+	origin = Vertex();
+	direction = Vertex();
 }
 
 // Parameterized Constructor
-Ray::Ray(Vertex* origin, Vertex* direction)
+Ray::Ray(Vertex origin, Vertex direction)
 {
 	this->origin = origin;
-	this->direction = direction->normalize();
+	this->direction = direction.normalize();
 }
+
+// Destructor
+Ray::~Ray() {}
 
 // String Representation
 std::string Ray::toString()
 {
-	return "[Origin: " + origin->toString() + "  |  (Direction: " + direction->toString() + "]";
+	return "[Origin: " + origin.toString() + "  |  (Direction: " + direction.toString() + "]";
 }
 
 // Get Point Intersection
-Vertex* Ray::getPoint(double t)
+Vertex Ray::getPoint(double t)
 {
-	double dx = direction->x;
-	double dy = direction->y;
-	double dz = direction->z;
+	double dx = direction.x;
+	double dy = direction.y;
+	double dz = direction.z;
 
-	double x = origin->x + (t * dx);
-	double y = origin->y + (t * dy);
-	double z = origin->z + (t * dz);
+	double x = origin.x + (t * dx);
+	double y = origin.y + (t * dy);
+	double z = origin.z + (t * dz);
 
-	return new Vertex(x, y, z);
+	return Vertex(x, y, z);
 }

@@ -24,10 +24,13 @@ public:
 	Sphere();
 
 	// Parameterized Constructor
-	Sphere(Vertex* center, double radius, Surface* surface);
+	Sphere(Vertex center, double radius, Surface surface);
+
+	// Destructor
+	~Sphere();
 
 	// Get Ray Intersection
-	Vertex* getRayIntersection(Ray* ray);
+	Vertex getRayIntersection(Ray ray);
 
 	// Get Shape Type
 	std::string getType();
