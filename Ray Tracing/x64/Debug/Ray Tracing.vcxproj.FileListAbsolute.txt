@@ -1,1 +1,2 @@
 D:\_Programming\C++\Ray Tracing\Ray Tracing\x64\Debug\Ray Tracing.exe
+D:\GitHub\Ray-Tracer\Ray Tracing\x64\Debug\Ray Tracing.exe

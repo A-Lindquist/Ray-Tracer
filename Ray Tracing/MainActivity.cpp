@@ -25,7 +25,6 @@ std::vector<Shape*> shapes;
 std::vector<Light*> lights;
 
 Vertex background_color;
-Triangle* triangle;
 std::vector<Vertex> vertices;
 Surface surface;
 
@@ -282,7 +281,6 @@ void collectSceneData(std::string file)
 		else if (words[0] == "begin")
 		{
 			vertices.clear();
-			triangle = nullptr;
 		}
 		// ------------------------------------ Vertex ----------------------------------- //
 		else if (words[0] == "vertex")
@@ -302,8 +300,7 @@ void collectSceneData(std::string file)
 			Vertex v2 = vertices[1];
 			Vertex v3 = vertices[2];
 
-			triangle = new Triangle(v1, v2, v3, surface);
-			shapes.push_back(triangle);
+			shapes.push_back(new Triangle(v1, v2, v3, surface));
 		}
 		// ----------------------------------- Render ------------------------------------ //
 		else if (words[0] == "render")
@@ -330,22 +327,21 @@ void collectSceneData(std::string file)
 void resetScene()
 {
 	// Clear Lists
-	if (shapes.size() >= 1)
+	while (!shapes.empty())
 	{
-		delete shapes[0];
-		shapes.clear();
+		delete shapes.back();
+		shapes.pop_back();
 	}
+	shapes.clear();
 	
 	vertices.clear();
 	
-	if (lights.size() >= 1)
+	while (!lights.empty())
 	{
-		delete lights[0];
+		delete lights.back();
+		lights.pop_back();
 	}
 	lights.clear();
-
-	//delete triangle;
-	triangle = nullptr;
 }
 
 // RENDER SCENE:
